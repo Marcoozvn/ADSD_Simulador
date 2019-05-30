@@ -17,6 +17,8 @@ public class Source extends Sim_entity {
         delay = new Sim_uniform_obj("delay", min, max);
         add_generator(delay);
 
+        this.numChegadas = numChegadas;
+
         stat = new Sim_stat();
         stat.add_measure(Sim_stat.UTILISATION);
         stat.add_measure(Sim_stat.SERVICE_TIME);
@@ -27,8 +29,7 @@ public class Source extends Sim_entity {
 
     @Override
     public void body(){
-        for(int i = 0; i <= numChegadas; i++) {
-            System.out.println(i);
+        for(int i = 0; i <= this.numChegadas; i++) {
             sim_schedule(out, 0.0, 0);
 
             sim_pause(delay.sample());

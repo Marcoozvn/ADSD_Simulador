@@ -4,7 +4,7 @@ public class Main {
 
     public static void main(String[] args) {
         Sim_system.initialise();
-        Source source = new Source("Source", 1000, 1, 12);
+        Source source = new Source("Source", 10000, 1, 12);
 
         CPU cpuWebServer = new CPU("CpuWebServer", 1, 20, 0.05, 0.24, 0.4, 0.3);
         CPU cpuApplicationServer = new CPU("CpuApplicationServer", 1, 12, 0.05, 0.35, 0.2, 0.4);
