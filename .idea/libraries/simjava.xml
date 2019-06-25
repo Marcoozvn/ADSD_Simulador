@@ -2,6 +2,8 @@
   <library name="simjava">
     <CLASSES>
       <root url="jar://$USER_HOME$/Downloads/simjava/simjava2/jars/simjava.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/simjava2/simjava2/jars/simjava.jar!/" />
+      <root url="jar://$USER_HOME$/Downloads/simjava2/simjava2/jars/SJGV.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

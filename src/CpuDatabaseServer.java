@@ -39,12 +39,13 @@ public class CpuDatabaseServer extends Sim_entity {
             Sim_event e =  new Sim_event();
             sim_get_next(e);
             sim_process(delay.sample());
-            sim_completed(e);
             double p = this.prob.sample();
             if (p < 0.6) {
                 sim_schedule(out2, 0, 1);
+                sim_trace(1, "Event from CPUDatabase to " + out2.get_dest_ename());
             } else {
                 sim_schedule(out1, 0, 1);
+                sim_trace(1, "Event from CPUDatabase to " + out1.get_dest_ename());
             }
         }
     }

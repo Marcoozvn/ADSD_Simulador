@@ -4,19 +4,19 @@ public class Main {
 
     public static void main(String[] args) {
         Sim_system.initialise();
-        Source source = new Source("Source", 10000, 1, 12);
+        Source source = new Source("Source", 100, 1, 12);
 
-        CPU cpuWebServer = new CPU("CpuWebServer", 1, 20, 0.05, 0.24, 0.4, 0.3);
-        CPU cpuApplicationServer = new CPU("CpuApplicationServer", 1, 12, 0.05, 0.35, 0.2, 0.4);
+        CPU cpuWebServer = new CPU("CpuWebServer", 1, 20, 0.05, 0.24, 0.4, 0.3, "WEB");
+        CPU cpuApplicationServer = new CPU("CpuApplicationServer", 1, 12, 0.05, 0.35, 0.4, 0.2, "APPLICATION");
         CpuDatabaseServer cpuDatabaseServer = new CpuDatabaseServer("CpuDatabaseServer", 1, 20);
         Out out = new Out("Out");
 
-        Disk diskWebServer = new Disk("DiskWebServer", 20, 40);
-        Disk diskApplicationServer = new Disk("DiskApplicationService", 20, 32);
-        Disk diskDatabaseServer = new Disk("DiskDatabaseServer", 20, 35);
+        Disk diskWebServer = new Disk("DiskWebServer", 20, 40, "WEB");
+        Disk diskApplicationServer = new Disk("DiskApplicationServer", 20, 32, "APPLICATION");
+        Disk diskDatabaseServer = new Disk("DiskDatabaseServer", 20, 35, "DATABASE");
 
-        Cache cacheWebServer = new Cache("CacheWebServer", 1, 12);
-        Cache cacheApplicationServer = new Cache("CacheApplicationServer", 1, 12);
+        Cache cacheWebServer = new Cache("CacheWebServer", 1, 12, "WEB");
+        Cache cacheApplicationServer = new Cache("CacheApplicationServer", 1, 12, "APPLICATION");
 
         //Ligacao com source
         Sim_system.link_ports("Source", "Out", "CpuWebServer", "In1");
@@ -35,8 +35,8 @@ public class Main {
         Sim_system.link_ports("CpuWebServer", "Out2", "CpuApplicationServer", "In1");
 
         //ligacao com o disco
-        Sim_system.link_ports("CpuApplicationServer", "Out1", "DiskApplicationService", "In");
-        Sim_system.link_ports("CpuApplicationServer", "In2", "DiskApplicationService", "Out");
+        Sim_system.link_ports("CpuApplicationServer", "Out1", "DiskApplicationServer", "In");
+        Sim_system.link_ports("CpuApplicationServer", "In2", "DiskApplicationServer", "Out");
 
         //ligacao com a cache
         Sim_system.link_ports("CpuApplicationServer", "Out3", "CacheApplicationServer", "In");
@@ -54,7 +54,7 @@ public class Main {
 
         //ligacao disco -> api
         Sim_system.link_ports("CpuDatabaseServer", "Out2", "CpuApplicationServer", "In4");
-
+        Sim_system.set_trace_detail(true, true, true);
         Sim_system.run();
     }
 }

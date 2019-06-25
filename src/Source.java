@@ -20,18 +20,18 @@ public class Source extends Sim_entity {
         this.numChegadas = numChegadas;
 
         stat = new Sim_stat();
-        stat.add_measure(Sim_stat.UTILISATION);
-        stat.add_measure(Sim_stat.SERVICE_TIME);
-        stat.add_measure(Sim_stat.WAITING_TIME);
-        stat.add_measure(Sim_stat.QUEUE_LENGTH);
+        stat.add_measure(Sim_stat.ARRIVAL_RATE); //Taxa de chegada
+        stat.add_measure(Sim_stat.QUEUE_LENGTH); //Tamanho da fila
+        stat.add_measure(Sim_stat.WAITING_TIME); //Tempo de espera
+        stat.add_measure(Sim_stat.UTILISATION);  //Utilização
+        stat.add_measure(Sim_stat.RESIDENCE_TIME); //Tempo de resposta
         set_stat(stat);
     }
 
     @Override
     public void body(){
         for(int i = 0; i <= this.numChegadas; i++) {
-            sim_schedule(out, 0.0, 0);
-
+            sim_schedule(out, 0.0, EventTypes.FROM_SOURCE.value);
             sim_pause(delay.sample());
         }
     }

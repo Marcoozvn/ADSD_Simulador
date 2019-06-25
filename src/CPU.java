@@ -8,8 +8,9 @@ public class CPU extends Sim_entity {
     private Sim_uniform_obj delay;
     private Sim_random_obj prob;
     private Sim_stat stat;
+    private String contexto;
 
-    public CPU(String name, double min, double max, double probCache, double probDisk, double probCPU, double probBack) {
+    public CPU(String name, double min, double max, double probCache, double probDisk, double probCPU, double probBack, String contexto) {
         super(name);
         in1 = new Sim_port("In1");
         in2 = new Sim_port("In2");
@@ -27,7 +28,7 @@ public class CPU extends Sim_entity {
         add_port(in2);
         add_port(in3);
         add_port(in4);
-
+        this.contexto = contexto;
         this.probCache = probCache;
         this.probDisk = probDisk;
         this.probCpu = probCPU;
@@ -40,30 +41,50 @@ public class CPU extends Sim_entity {
         add_generator(prob);
 
         stat = new Sim_stat();
-        stat.add_measure(Sim_stat.UTILISATION);
-        stat.add_measure(Sim_stat.SERVICE_TIME);
-        stat.add_measure(Sim_stat.WAITING_TIME);
-        stat.add_measure(Sim_stat.QUEUE_LENGTH);
+        stat.add_measure(Sim_stat.ARRIVAL_RATE); //Taxa de chegada
+        stat.add_measure(Sim_stat.QUEUE_LENGTH); //Tamanho da fila
+        stat.add_measure(Sim_stat.WAITING_TIME); //Tempo de espera
+        stat.add_measure(Sim_stat.UTILISATION);  //Utilização
+        stat.add_measure(Sim_stat.RESIDENCE_TIME); //Tempo de resposta
         set_stat(stat);
+    }
+
+    private EventTypes eventType() {
+        switch (this.contexto) {
+            case "WEB":
+                return EventTypes.FROM_CPU_WEB;
+            case "APPLICATION":
+                return EventTypes.FROM_CPU_APPLICATION;
+        }
+        return null;
     }
 
     @Override
     public void body() {
         while(Sim_system.running()){
+            //System.out.println(this.get_name());
             Sim_event e =  new Sim_event();
             sim_get_next(e);
             sim_process(delay.sample());
-            sim_completed(e);
             double p = prob.sample();
 
             if (p < probCache) {
-                sim_schedule(out3, 0, 1);
+                sim_schedule(out3, 0, this.eventType().value);
+                sim_trace(1, "Event from " + contexto + " CPU to " + out3.get_dest_ename());
             } else if ( p < probDisk) {
-                sim_schedule(out1, 0, 1);
+                sim_schedule(out1, 0, this.eventType().value);
+                sim_trace(1, "Event from " + contexto + " CPU to " + out1.get_dest_ename());
             } else if (p < probCpu) {
-                sim_schedule(out2, 0, 1);
+                sim_schedule(out2, 0, this.eventType().value);
+                System.out.println(this.get_name());
+                sim_trace(1, "Event from " + contexto + " CPU to " + out2.get_dest_ename());
             } else {
-                sim_schedule(out4, 0, 1);
+                if (contexto.equals("CPU")) {
+                    sim_completed(e);
+                } else {
+                    sim_schedule(out4, 0, this.eventType().value);
+                    sim_trace(1, "Event from " + contexto + " CPU to " + out4.get_dest_ename());
+                }
             }
         }
     }
